@@ -1,0 +1,4 @@
+[wrap-git]
+url = https://github.com/kevin4rb200116/ntokenize.git
+revision = main
+depth = 1

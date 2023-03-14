@@ -1,0 +1,9 @@
+*.o
+*.elf
+*.so
+*.a
+.vscode/
+build*/
+release*/
+debug*/
+subprojects/*/
