@@ -6,17 +6,13 @@
 
 namespace nkc::tokenize {
   using namespace std;
-  using ntokenize::TokenInfo;
+  using ntokenize::Token;
 
-  typedef struct Tokenizer {
-    private:
-      ntokenize::Tokenizer tokenize;
+  typedef struct Tokenizer:ntokenize::Tokenizer {
+    Tokenizer(FILE* fp)
+      : ntokenize::Tokenizer(fp) {}
 
-    public:
-      Tokenizer(FILE* fp)
-        : tokenize(ntokenize::Tokenizer(fp)) {}
-
-      TokenInfo* next();
+    Token* next();
   } Tokenizer;
 } // namespace nkc::tokenize
 

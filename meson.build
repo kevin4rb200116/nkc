@@ -8,7 +8,10 @@ ntokenize = subproject('ntokenize')
 ntokenize_dep = ntokenize.get_variable('ntokenize_dep')
 
 lib = static_library('tokenize',
+  'src/ast.cc',
+  'src/binop.cc',
   'src/lex.cc',
+  'src/parser.cc',
   'src/tokenize.cc',
   dependencies: ntokenize_dep,
   include_directories: incdir,

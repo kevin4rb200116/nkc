@@ -1,0 +1,4 @@
+def foo(x y) x+foo(y, 4.0); # a function definition
+def foo(x y) x+y y;         # another function definition
+def foo(x y) x+y );         # a bad function definition
+extern sin(a);              # an extern function

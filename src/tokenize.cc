@@ -1,43 +1,47 @@
 #include "nkc/tokenize.hh"
 
 namespace nkc::tokenize {
-  TokenInfo* Tokenizer::next() {
-    TokenInfo* token = tokenize.next();
+  Token* Tokenizer::next() {
+    ntokenize::Tokenizer::next();
 
     while (true) {
-      if(token->type == ntokenize::lex::token["TYPE_IGNORE"]) {
-        token = tokenize.next();
+      if(current.type == ntokenize::lex::Token::Ignore) {
+        ntokenize::Tokenizer::next();;
         continue;
       }
 
-      if(token->type == ntokenize::lex::token["NL"]) {
-        token = tokenize.next();
+      if(current.type == ntokenize::lex::Token::NewLine) {
+        ntokenize::Tokenizer::next();;
         continue;
       }
 
-      if(token->type == ntokenize::lex::token["COMMENT"]) {
-        token = tokenize.next();
+      if(current.type == ntokenize::lex::Token::Comment) {
+        ntokenize::Tokenizer::next();
         continue;
+      }
+
+      if(current.type == ntokenize::lex::Token::Error) {
+        return nullptr;
       }
 
       break;
     }
 
-    if (token->type == ntokenize::lex::token["NAME"]) {
-      if (token->raw_value == "def")
-        token->type = lex::token["DEF"];
-      else if (token->raw_value == "extern")
-        token->type = lex::token["EXTERN"];
+    if (current.type == ntokenize::lex::Name) {
+      if (current.value == "def")
+        current.type = lex::Token::Definition;
+      else if (current.value == "extern")
+        current.type = lex::Token::Extern;
       else
-        token->type = lex::token["IDENTIFIER"];
+        current.type = lex::Token::Identifier;
     }
 
-    if (token->type == ntokenize::lex::token["NUMBER"])
-      token->type = lex::token["NUMBER"];
+    if (current.type == ntokenize::lex::Token::Number)
+      current.type = lex::Token::Number;
 
-    if (token->type == ntokenize::lex::token["ENDMARKER"])
-      token->type = lex::token["EOF"];
+    if (current.type == ntokenize::lex::Token::EndMarker)
+      current.type = lex::Token::EndMarker;
 
-    return token;
+    return &last;
   }
 } // namespace nkc::tokenize

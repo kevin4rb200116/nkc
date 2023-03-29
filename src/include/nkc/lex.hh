@@ -4,12 +4,15 @@
 #define LEX_H
 
 namespace nkc::lex {
-  using ntokenize::lex::TokenList;
-  using ntokenize::lex::TokenNameList;
-  using ntokenize::lex::OperatorList;
+  typedef enum Token : int16_t {
+    EndMarker = 257,
+    Definition,
+    Extern,
+    Identifier,
+    Number,
+  } Token;
 
-  extern TokenNameList token_name;
-  extern TokenList token;
+  extern map<int16_t,string> token_name;
 } // namespace nkc::lex
 
 

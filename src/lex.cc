@@ -1,19 +1,13 @@
 #include "nkc/lex.hh"
 
-namespace nkc::lex {
-  TokenNameList token_name = {
-    { 0, "EOF"},
-    {-1, "DEF"},
-    {-2, "EXTERN"},
-    {-3, "IDENTIFIER"},
-    {-4, "NUMBER"},
-  };
+#define TokenEntry(name) {Token::name, #name}
 
-  TokenList token = {
-    {"EOF",  0},
-    {"DEF", -1},
-    {"EXTERN", -2},
-    {"IDENTIFIER", -3},
-    {"NUMBER", -4},
+namespace nkc::lex {
+  map<int16_t,string> token_name = {
+    TokenEntry(EndMarker),
+    TokenEntry(Definition),
+    TokenEntry(Extern),
+    TokenEntry(Identifier),
+    TokenEntry(Number),
   };
 }
