@@ -18,7 +18,7 @@
 #include "llvm/IR/Type.h"
 #include "llvm/IR/Verifier.h"
 
-#include "ntokenize/tokenize.hh"
+#include "ntokenize/main.hh"
 
 namespace nkc {
   using namespace std;

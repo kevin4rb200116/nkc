@@ -9,7 +9,7 @@ namespace nkc::parser {
     if (!v)
       return nullptr;
 
-    if (tokenize.current.value != ")") {
+    if (tokenize.current.value.raw != ")") {
       fprintf(stderr,"expected ')'");
       return nullptr;
     }
@@ -20,30 +20,30 @@ namespace nkc::parser {
   }
 
   unique_ptr<ast::Expression> Parser::Number() {
-    auto result = make_unique<ast::Number>(strtod(tokenize.current.value.c_str(),nullptr));
+    auto result = make_unique<ast::Number>(strtod(tokenize.current.value.raw.c_str(),nullptr));
     tokenize.next();
 
     return move(result);
   }
 
   unique_ptr<ast::Expression> Parser::Identifier() {
-    string name = string(tokenize.current.value);
+    string name = string(tokenize.current.value.raw);
     vector<unique_ptr<ast::Expression>> args;
 
     tokenize.next(); // eat identifier.
 
-    if (tokenize.current.value != "(") {
+    if (tokenize.current.value.raw != "(") {
       return make_unique<ast::Variable>(name);
-    } else if (tokenize.current.value == "(") {
+    } else if (tokenize.current.value.raw == "(") {
       for (tokenize.next();; tokenize.next()) {
         if (auto arg = LHS())
           args.push_back(move(arg));
         else
           return nullptr;
 
-        if (tokenize.current.value == ")")
+        if (tokenize.current.value.raw == ")")
           break;
-        else if (tokenize.current.value != ",") {
+        else if (tokenize.current.value.raw != ",") {
           fprintf(stderr,"Expected ')' or ',' in argument list\n");
           return nullptr;
         }
@@ -62,7 +62,7 @@ namespace nkc::parser {
       primary = Identifier();
     } else if (tokenize.current.type == lex::Token::Number) {
       primary = Number();
-    } else if (tokenize.current.value == "(") {
+    } else if (tokenize.current.value.raw == "(") {
       primary = Paren();
     } else {
       fprintf(stderr,"unknown token when expecting an expression\n");
@@ -99,7 +99,7 @@ namespace nkc::parser {
           return nullptr;
       }
 
-      lhs = make_unique<ast::Binary>(bin_op.value,move(lhs),move(rhs));
+      lhs = make_unique<ast::Binary>(bin_op.value.raw, move(lhs),move(rhs));
     }
   }
 
@@ -118,11 +118,11 @@ namespace nkc::parser {
       return nullptr;
     }
 
-    string fname = string(tokenize.current.value);
+    string fname = string(tokenize.current.value.raw);
 
     tokenize.next();
 
-    if (tokenize.current.value != "(")
+    if (tokenize.current.value.raw != "(")
       return nullptr;
 
     vector<string> arg_names;
@@ -131,9 +131,9 @@ namespace nkc::parser {
       if (tokenize.current.type != lex::Identifier)
         break;
       else
-        arg_names.push_back(string(tokenize.current.value));
+        arg_names.push_back(string(tokenize.current.value.raw));
 
-    if (tokenize.current.value != ")")
+    if (tokenize.current.value.raw != ")")
       return nullptr;
 
     tokenize.next();
@@ -180,7 +180,7 @@ namespace nkc::parser {
     fprintf(stderr, "> ");
     tokenize.next();
 
-    if (tokenize.current.value == ";") {
+    if (tokenize.current.value.raw == ";") {
       return;
     } else if (tokenize.current.type == lex::Token::Definition) {
       auto ast = Definition();
@@ -220,7 +220,7 @@ namespace nkc::parser {
           function->removeFromParent();
         }
       } else
-        fprintf(stderr, "error while parsing top-level expression");
+        fprintf(stderr, "error while parsing top-level expression\n");
 
       return;
     }

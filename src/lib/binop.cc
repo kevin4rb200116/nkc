@@ -12,7 +12,7 @@ namespace nkc::parser {
     if (tokenize.current.type == ntokenize::lex::Token::Name)
       return -1;
 
-    int token_precedence = binop_precedence[tokenize.current.value];
+    int token_precedence = binop_precedence[tokenize.current.value.raw];
 
     if (token_precedence <= 0)
       return -1;

@@ -21,12 +21,12 @@ incdir = include_directories(
 ntokenize = subproject('ntokenize')
 ntokenize_dep = ntokenize.get_variable('ntokenize_dep')
 
-lib = static_library('tokenize',
-  'src/ast.cc',
-  'src/binop.cc',
-  'src/lex.cc',
-  'src/parser.cc',
-  'src/tokenize.cc',
+lib = static_library('nkc',
+  'src/lib/ast.cc',
+  'src/lib/binop.cc',
+  'src/lib/lex.cc',
+  'src/lib/parser.cc',
+  'src/lib/tokenize.cc',
   dependencies: ntokenize_dep,
   include_directories: incdir,
   install: false)

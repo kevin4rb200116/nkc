@@ -28,15 +28,16 @@ namespace nkc::tokenize {
     }
 
     if (current.type == ntokenize::lex::Name) {
-      if (current.value == "def")
+      if (current.value.raw == "def")
         current.type = lex::Token::Definition;
-      else if (current.value == "extern")
+      else if (current.value.raw == "extern")
         current.type = lex::Token::Extern;
       else
         current.type = lex::Token::Identifier;
     }
 
-    if (current.type == ntokenize::lex::Token::Number)
+    if (current.type == ntokenize::lex::Token::FloatNumber
+        || current.type == ntokenize::lex::Token::DecNumber)
       current.type = lex::Token::Number;
 
     if (current.type == ntokenize::lex::Token::EndMarker)
