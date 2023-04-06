@@ -4,7 +4,20 @@
 using namespace nkc::parser;
 
 int main(int argc, char** argv, char** environ) {
-  Parser parse = Parser(stdin);
+  FILE* inputf;
+
+  if (argc == 2) {
+    inputf = fopen(argv[1],"r");
+
+    if (!inputf) {
+      fprintf(stderr, "error trying to open file: %s", argv[1]);
+      return EXIT_FAILURE;
+    }
+  } else {
+    inputf = stdin;
+  }
+
+  Parser parse = Parser(inputf);
 
   while (!feof(stdin)) {
     if (parse.tokenize.current.type == nkc::lex::Token::EndMarker)
@@ -12,6 +25,8 @@ int main(int argc, char** argv, char** environ) {
 
     parse.next();
   }
+
+  parse.code.module->print(llvm::errs(), nullptr);
 
   return EXIT_SUCCESS;
 }

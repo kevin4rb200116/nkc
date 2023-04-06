@@ -13,6 +13,7 @@ namespace nkc::parser {
 
   typedef struct Parser {
     Tokenizer tokenize;
+    Codegen code;
 
     int get_token_precedence();
 

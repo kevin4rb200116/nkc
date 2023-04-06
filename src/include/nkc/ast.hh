@@ -6,6 +6,7 @@
 namespace nkc::ast {
   typedef struct Expression {
     virtual ~Expression() = default;
+    virtual llvm::Value* codegen(Codegen* code) = 0;
   } Expression;
 
   typedef struct Number:Expression {
@@ -13,6 +14,8 @@ namespace nkc::ast {
 
     Number(double value)
       : value(value) {}
+    
+    llvm::Value* codegen(Codegen* code) override;
   } Number;
 
   typedef struct Variable:Expression {
@@ -20,6 +23,8 @@ namespace nkc::ast {
 
     Variable(const string name)
       : name(name) {}
+
+    llvm::Value* codegen(Codegen* code) override;
   } Variable;
 
   typedef struct Binary:Expression {
@@ -28,6 +33,8 @@ namespace nkc::ast {
   
     Binary(string op, unique_ptr<Expression> lhs, unique_ptr<Expression> rhs)
       : op(op), lhs(move(lhs)), rhs(move(rhs)) {}
+
+    llvm::Value* codegen(Codegen* code) override;
   } Binary;
 
   typedef struct Call:Expression {
@@ -36,16 +43,18 @@ namespace nkc::ast {
 
     Call(const string callee, vector<unique_ptr<Expression>> args)
       : callee(callee), args(move(args)) {}
+
+    llvm::Value* codegen(Codegen* code) override;
   } Call;
 
-  typedef struct Prototype:Expression {
+  typedef struct Prototype {
     string name;
     vector<string> args;
 
-    const string getName() const { return name; }
-
     Prototype(string name, vector<string> args)
       : name(name), args(args) {}
+
+    llvm::Function* codegen(Codegen* code);
   } Prototype;
 
   typedef struct Function {
@@ -54,6 +63,8 @@ namespace nkc::ast {
 
     Function(unique_ptr<Prototype> proto, unique_ptr<Expression> body)
       : proto(move(proto)), body(move(body)) {}
+
+    llvm::Function* codegen(Codegen* code);
   } Function;
 } // namespace nkc::ast
 
