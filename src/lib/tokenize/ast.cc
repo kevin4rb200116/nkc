@@ -1,11 +1,11 @@
-#include "nkc/ast.hh"
+#include "nkc/tokenize/ast.hh"
 
-namespace nkc::ast {
-  llvm::Value* ast::Number::codegen(Codegen* code) {
+namespace nkc::tokenize::ast {
+  llvm::Value* tokenize::ast::Number::codegen(Codegen* code) {
     return llvm::ConstantFP::get(*code->context, llvm::APFloat(value));
   }
 
-  llvm::Value* ast::Variable::codegen(Codegen* code) {
+  llvm::Value* tokenize::ast::Variable::codegen(Codegen* code) {
     auto* v = code->named_values[name];
 
     if (!v) {
@@ -17,7 +17,7 @@ namespace nkc::ast {
     return v;
   }
 
-  llvm::Value* ast::Binary::codegen(Codegen* code) {
+  llvm::Value* tokenize::ast::Binary::codegen(Codegen* code) {
     llvm::Value* l = lhs->codegen(code);
     llvm::Value* r = rhs->codegen(code);
 
@@ -43,7 +43,7 @@ namespace nkc::ast {
     }
   }
 
-  llvm::Value* ast::Call::codegen(Codegen* code) {
+  llvm::Value* tokenize::ast::Call::codegen(Codegen* code) {
     llvm::Function* calleef = code->module->getFunction(callee);
 
     if (!calleef) {
@@ -67,7 +67,7 @@ namespace nkc::ast {
     return code->builder->CreateCall(calleef,argsv,"calltmp");
   }
 
-  llvm::Function* ast::Prototype::codegen(Codegen* code) {
+  llvm::Function* tokenize::ast::Prototype::codegen(Codegen* code) {
     // Make the function type:  double(double,double) etc.
     auto doubles=
       vector<llvm::Type*>(args.size(),
@@ -88,7 +88,7 @@ namespace nkc::ast {
     return f;
   }
 
-  llvm::Function* ast::Function::codegen(Codegen* code) {
+  llvm::Function* tokenize::ast::Function::codegen(Codegen* code) {
     // First, check for an existing function from a previous 'extern' declaration.
     llvm::Function* function=code->module->getFunction(llvm::StringRef(proto->name));
 
@@ -123,4 +123,4 @@ namespace nkc::ast {
     function->eraseFromParent();
     return nullptr;
   }
-} // namespace nkc::ast
+} // namespace nkc::tokenize::ast

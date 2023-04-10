@@ -1,5 +1,5 @@
-#include "common.hh"
-#include "lex.hh"
+#include "nkc/common.hh"
+#include "nkc/tokenize/lex.hh"
 
 #ifndef NKCTokenizeHeader
 #define NKCTokenizeHeader

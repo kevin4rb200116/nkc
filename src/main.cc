@@ -1,7 +1,7 @@
-#include "nkc/parser.hh"
+#include "nkc/parse.hh"
 #include <memory>
 
-using namespace nkc::parser;
+using namespace nkc::parse;
 
 int main(int argc, char** argv, char** environ) {
   FILE* inputf;
@@ -20,7 +20,7 @@ int main(int argc, char** argv, char** environ) {
   Parser parse = Parser(inputf);
 
   while (!feof(stdin)) {
-    if (parse.tokenize.current.type == nkc::lex::Token::EndMarker)
+    if (parse.tokenize.current.type == nkc::tokenize::lex::Token::EndMarker)
       break;
 
     parse.next();

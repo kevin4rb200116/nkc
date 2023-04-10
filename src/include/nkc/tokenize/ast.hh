@@ -1,9 +1,9 @@
-#include "common.hh"
+#include "nkc/common.hh"
 
 #ifndef ASTHeader
 #define ASTHeader
 
-namespace nkc::ast {
+namespace nkc::tokenize::ast {
   typedef struct Expression {
     virtual ~Expression() = default;
     virtual llvm::Value* codegen(Codegen* code) = 0;
@@ -66,7 +66,6 @@ namespace nkc::ast {
 
     llvm::Function* codegen(Codegen* code);
   } Function;
-} // namespace nkc::ast
-
+} // namespace nkc::tokenize::ast
 
 #endif //ASTHeader

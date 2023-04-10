@@ -1,6 +1,6 @@
-#include "nkc/parser.hh"
+#include "nkc/parse.hh"
 
-namespace nkc::parser {
+namespace nkc::parse {
   map<string,int> binop_precedence = {
     {"<",10},
     {"+",20},
@@ -19,4 +19,4 @@ namespace nkc::parser {
 
     return token_precedence;
   }
-} // namespace nkc::parser
+} // namespace nkc::parse

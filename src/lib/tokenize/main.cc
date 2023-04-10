@@ -1,4 +1,4 @@
-#include "nkc/tokenize.hh"
+#include "nkc/tokenize/main.hh"
 
 namespace nkc::tokenize {
   Token* Tokenizer::next() {
@@ -29,19 +29,19 @@ namespace nkc::tokenize {
 
     if (current.type == ntokenize::lex::Name) {
       if (current.value.raw == "def")
-        current.type = lex::Token::Definition;
+        current.type = tokenize::lex::Token::Definition;
       else if (current.value.raw == "extern")
-        current.type = lex::Token::Extern;
+        current.type = tokenize::lex::Token::Extern;
       else
-        current.type = lex::Token::Identifier;
+        current.type = tokenize::lex::Token::Identifier;
     }
 
     if (current.type == ntokenize::lex::Token::FloatNumber
         || current.type == ntokenize::lex::Token::DecNumber)
-      current.type = lex::Token::Number;
+      current.type = tokenize::lex::Token::Number;
 
     if (current.type == ntokenize::lex::Token::EndMarker)
-      current.type = lex::Token::EndMarker;
+      current.type = tokenize::lex::Token::EndMarker;
 
     return &last;
   }

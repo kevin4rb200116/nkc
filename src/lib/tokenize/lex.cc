@@ -1,8 +1,8 @@
-#include "nkc/lex.hh"
+#include "nkc/tokenize/lex.hh"
 
 #define TokenEntry(name) {Token::name, #name}
 
-namespace nkc::lex {
+namespace nkc::tokenize::lex {
   map<int16_t,string> token_name = {
     TokenEntry(EndMarker),
     TokenEntry(Definition),
