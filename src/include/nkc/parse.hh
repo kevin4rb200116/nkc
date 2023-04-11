@@ -11,9 +11,21 @@ namespace nkc::parse {
 
   extern map<string,int> binop_precedence;
 
+  typedef enum : uint8_t {
+    Error,
+    Ignore,
+    Definition,
+    TopLevelExpression,
+    Extern,
+  } Result;
+
   typedef struct Parser {
     Tokenizer tokenize;
-    codegen::Codegen code;
+    struct {
+      unique_ptr<codegen::ast::Function> Definition;
+      unique_ptr<codegen::ast::Function> TopLevelExpression;
+      unique_ptr<codegen::ast::Prototype> Extern;
+    } result;
 
     int get_token_precedence();
 
@@ -31,10 +43,10 @@ namespace nkc::parse {
     unique_ptr<codegen::ast::Function> TopLevelExpression();
     unique_ptr<codegen::ast::Prototype> Extern();
 
-    void next();
-
     Parser(FILE* fp)
       : tokenize(Tokenizer(fp)) {}
+    
+    Result next();
   } Parser;
 } // namespace nkc::parse
 

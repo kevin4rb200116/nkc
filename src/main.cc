@@ -1,7 +1,7 @@
-#include "nkc/parse.hh"
+#include "nkc/main.hh"
 #include <memory>
 
-using namespace nkc::parse;
+using namespace nkc;
 
 int main(int argc, char** argv, char** environ) {
   FILE* inputf;
@@ -17,16 +17,16 @@ int main(int argc, char** argv, char** environ) {
     inputf = stdin;
   }
 
-  Parser parse = Parser(inputf);
+  static Driver x = Driver(inputf);
 
   while (!feof(stdin)) {
-    if (parse.tokenize.current.type == nkc::tokenize::lex::Token::EndMarker)
+    if (x.parse.tokenize.current.type == nkc::tokenize::lex::Token::EndMarker)
       break;
 
-    parse.next();
+    x.next();
   }
 
-  parse.code.module->print(llvm::errs(), nullptr);
+  x.code.module->print(llvm::errs(), nullptr);
 
   return EXIT_SUCCESS;
 }

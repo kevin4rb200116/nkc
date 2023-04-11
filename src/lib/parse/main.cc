@@ -176,53 +176,43 @@ namespace nkc::parse {
     return proto;
   }
 
-  void Parser::next() {
-    fprintf(stderr, "> ");
+  Result Parser::next() {
     tokenize.next();
 
     if (tokenize.current.value.raw == ";") {
-      return;
+      return Result::Ignore;
     } else if (tokenize.current.type == tokenize::lex::Token::Definition) {
       auto ast = Definition();
 
       if (ast) {
-        if (auto* function = ast->codegen(&code)) {
-          fprintf(stderr, "Read function definition:\n");
-          function->print(llvm::errs());
-          fprintf(stderr,"\n");
-        }
+        result.Definition = move(ast);
+        return Result::Definition;
       } else
         fprintf(stderr, "error while parsing definition.\n");
 
-      return;
+      return Result::Error;
+
     } else if (tokenize.current.type == tokenize::lex::Token::Extern) {
       auto ast = Extern();
 
       if (ast) {
-        if (auto* function=ast->codegen(&code)) {
-          fprintf(stderr, "Read extern:\n");
-          function->print(llvm::errs());
-          fprintf(stderr,"\n");
-        }
+        result.Extern = move(ast);
+        return Result::Extern;
       } else
         fprintf(stderr, "error while parsing extern\n");
 
-      return;
+      return Result::Error;
+
     } else {
       auto ast=TopLevelExpression();
 
       if (ast) {
-        if (auto* function=ast->codegen(&code)) {
-          fprintf(stderr, "Read top-level expression:\n");
-          function->print(llvm::errs());
-          fprintf(stderr,"\n");
-
-          function->removeFromParent();
-        }
+        result.TopLevelExpression = move(ast);
+        return Result::TopLevelExpression;
       } else
         fprintf(stderr, "error while parsing top-level expression\n");
 
-      return;
+      return Result::Error;
     }
   }
 } // namespace nkc::parse

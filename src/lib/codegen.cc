@@ -10,10 +10,10 @@ namespace nkc::codegen::ast {
 
     if (!v) {
       fprintf(stderr, "Unknown variable name");
-      
+
       return nullptr;
     }
-    
+
     return v;
   }
 
@@ -84,7 +84,7 @@ namespace nkc::codegen::ast {
     unsigned idx = 0;
     for (auto& arg:f->args())
       arg.setName(args[idx++]);
-    
+
     return f;
   }
 
@@ -94,7 +94,7 @@ namespace nkc::codegen::ast {
 
     if (!function)
       function = proto->codegen(code);
-    
+
     if (!function)
       return nullptr;
 
@@ -108,7 +108,7 @@ namespace nkc::codegen::ast {
     code->named_values.clear();
     for (auto& arg:function->args())
       code->named_values[string(arg.getName())] = &arg;
-    
+
     if (llvm::Value* ret_val=body->codegen(code)) {
       // Finish off the function.
       code->builder->CreateRet(ret_val);

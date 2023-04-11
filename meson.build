@@ -27,6 +27,7 @@ lib = static_library('nkc',
   'src/lib/parse/binop.cc',
   'src/lib/parse/main.cc',
   'src/lib/codegen.cc',
+  'src/lib/main.cc',
   dependencies: ntokenize_dep,
   include_directories: incdir,
   install: false)
