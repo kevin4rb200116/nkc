@@ -1,7 +1,7 @@
 #include "nkc/parse.hh"
 
 namespace nkc::parse {
-  unique_ptr<tokenize::ast::Expression> Parser::Paren() {
+  unique_ptr<codegen::ast::Node> Parser::Paren() {
     tokenize.next(); // eat (.
 
     auto v = LHS();
@@ -19,21 +19,21 @@ namespace nkc::parse {
     return v;
   }
 
-  unique_ptr<tokenize::ast::Expression> Parser::Number() {
-    auto result = make_unique<tokenize::ast::Number>(strtod(tokenize.current.value.raw.c_str(),nullptr));
+  unique_ptr<codegen::ast::Node> Parser::Number() {
+    auto result = make_unique<codegen::ast::Number>(strtod(tokenize.current.value.raw.c_str(),nullptr));
     tokenize.next();
 
     return move(result);
   }
 
-  unique_ptr<tokenize::ast::Expression> Parser::Identifier() {
+  unique_ptr<codegen::ast::Node> Parser::Identifier() {
     string name = string(tokenize.current.value.raw);
-    vector<unique_ptr<tokenize::ast::Expression>> args;
+    vector<unique_ptr<codegen::ast::Node>> args;
 
     tokenize.next(); // eat identifier.
 
     if (tokenize.current.value.raw != "(") {
-      return make_unique<tokenize::ast::Variable>(name);
+      return make_unique<codegen::ast::Variable>(name);
     } else if (tokenize.current.value.raw == "(") {
       for (tokenize.next();; tokenize.next()) {
         if (auto arg = LHS())
@@ -52,11 +52,11 @@ namespace nkc::parse {
       tokenize.next(); // Eat the ')'.
     }
 
-    return make_unique<tokenize::ast::Call>(name, move(args));
+    return make_unique<codegen::ast::Call>(name, move(args));
   }
 
-  unique_ptr<tokenize::ast::Expression> Parser::Primary() {
-    unique_ptr<tokenize::ast::Expression> primary;
+  unique_ptr<codegen::ast::Node> Parser::Primary() {
+    unique_ptr<codegen::ast::Node> primary;
 
     if (tokenize.current.type == tokenize::lex::Token::Identifier) {
       primary = Identifier();
@@ -72,8 +72,8 @@ namespace nkc::parse {
     return primary;
   }
 
-  unique_ptr<tokenize::ast::Expression> Parser::RHS(int expr_prec,
-                                    unique_ptr<tokenize::ast::Expression> lhs) {
+  unique_ptr<codegen::ast::Node> Parser::RHS(int expr_prec,
+                                    unique_ptr<codegen::ast::Node> lhs) {
     while (true) {
       int token_precedence = get_token_precedence();
 
@@ -99,11 +99,11 @@ namespace nkc::parse {
           return nullptr;
       }
 
-      lhs = make_unique<tokenize::ast::Binary>(bin_op.value.raw, move(lhs),move(rhs));
+      lhs = make_unique<codegen::ast::Binary>(bin_op.value.raw, move(lhs),move(rhs));
     }
   }
 
-  unique_ptr<tokenize::ast::Expression> Parser::LHS() {
+  unique_ptr<codegen::ast::Node> Parser::LHS() {
     auto lhs = Primary();
 
     if (!lhs)
@@ -112,7 +112,7 @@ namespace nkc::parse {
     return RHS(0, move(lhs));
   }
 
-  unique_ptr<tokenize::ast::Prototype> Parser::Prototype() {
+  unique_ptr<codegen::ast::Prototype> Parser::Prototype() {
     if (tokenize.current.type != tokenize::lex::Token::Identifier) {
       fprintf(stderr, "Expected function name in prototype\n");
       return nullptr;
@@ -138,10 +138,10 @@ namespace nkc::parse {
 
     tokenize.next();
 
-    return make_unique<tokenize::ast::Prototype>(fname,move(arg_names));
+    return make_unique<codegen::ast::Prototype>(fname,move(arg_names));
   }
 
-  unique_ptr<tokenize::ast::Function> Parser::Definition() {
+  unique_ptr<codegen::ast::Function> Parser::Definition() {
     tokenize.next(); // eat def.
 
     auto proto = Prototype();
@@ -150,18 +150,18 @@ namespace nkc::parse {
       return nullptr;
 
     if (auto e = LHS())
-      return make_unique<tokenize::ast::Function>(move(proto), move(e));
+      return make_unique<codegen::ast::Function>(move(proto), move(e));
 
     return nullptr;
   }
 
-  unique_ptr<tokenize::ast::Function> Parser::TopLevelExpression() {
-    unique_ptr<tokenize::ast::Function> expr;
+  unique_ptr<codegen::ast::Function> Parser::TopLevelExpression() {
+    unique_ptr<codegen::ast::Function> expr;
 
     if (auto e = LHS()) {
-      auto proto = make_unique<tokenize::ast::Prototype>("__anon_expr", vector<string>());
+      auto proto = make_unique<codegen::ast::Prototype>("__anon_expr", vector<string>());
 
-      expr = make_unique<tokenize::ast::Function>(move(proto), move(e));
+      expr = make_unique<codegen::ast::Function>(move(proto), move(e));
     } else {
       expr = nullptr;
     }
@@ -169,7 +169,7 @@ namespace nkc::parse {
     return expr;
   }
 
-  unique_ptr<tokenize::ast::Prototype> Parser::Extern() {
+  unique_ptr<codegen::ast::Prototype> Parser::Extern() {
     tokenize.next(); // eat extern.
     auto proto = Prototype();
 

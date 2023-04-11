@@ -22,11 +22,11 @@ ntokenize = subproject('ntokenize')
 ntokenize_dep = ntokenize.get_variable('ntokenize_dep')
 
 lib = static_library('nkc',
-  'src/lib/tokenize/ast.cc',
   'src/lib/tokenize/lex.cc',
   'src/lib/tokenize/main.cc',
   'src/lib/parse/binop.cc',
   'src/lib/parse/main.cc',
+  'src/lib/codegen.cc',
   dependencies: ntokenize_dep,
   include_directories: incdir,
   install: false)

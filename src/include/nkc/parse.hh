@@ -1,6 +1,6 @@
 #include "nkc/common.hh"
 #include "nkc/tokenize/main.hh"
-#include "nkc/tokenize/ast.hh"
+#include "nkc/codegen.hh"
 
 #ifndef ParserHeader
 #define ParserHeader
@@ -13,23 +13,23 @@ namespace nkc::parse {
 
   typedef struct Parser {
     Tokenizer tokenize;
-    Codegen code;
+    codegen::Codegen code;
 
     int get_token_precedence();
 
-    unique_ptr<tokenize::ast::Expression> Paren();
-    unique_ptr<tokenize::ast::Expression> Number();
-    unique_ptr<tokenize::ast::Expression> Identifier();
+    unique_ptr<codegen::ast::Node> Paren();
+    unique_ptr<codegen::ast::Node> Number();
+    unique_ptr<codegen::ast::Node> Identifier();
 
-    unique_ptr<tokenize::ast::Expression> Primary();
-    unique_ptr<tokenize::ast::Expression>
-      RHS(int expr_prec, unique_ptr<tokenize::ast::Expression> lhs);
-    unique_ptr<tokenize::ast::Expression> LHS();
-    unique_ptr<tokenize::ast::Prototype> Prototype();
+    unique_ptr<codegen::ast::Node> Primary();
+    unique_ptr<codegen::ast::Node>
+      RHS(int expr_prec, unique_ptr<codegen::ast::Node> lhs);
+    unique_ptr<codegen::ast::Node> LHS();
+    unique_ptr<codegen::ast::Prototype> Prototype();
 
-    unique_ptr<tokenize::ast::Function> Definition();
-    unique_ptr<tokenize::ast::Function> TopLevelExpression();
-    unique_ptr<tokenize::ast::Prototype> Extern();
+    unique_ptr<codegen::ast::Function> Definition();
+    unique_ptr<codegen::ast::Function> TopLevelExpression();
+    unique_ptr<codegen::ast::Prototype> Extern();
 
     void next();
 

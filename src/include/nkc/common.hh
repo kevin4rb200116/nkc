@@ -22,18 +22,6 @@
 
 namespace nkc {
   using namespace std;
-
-  typedef struct Codegen {
-    unique_ptr<llvm::LLVMContext> context;
-    unique_ptr<llvm::Module> module;
-    unique_ptr<llvm::IRBuilder<>> builder;
-    map<string, llvm::Value*> named_values;
-
-    Codegen()
-      : context(make_unique<llvm::LLVMContext>()),
-        module(make_unique<llvm::Module>("nkc-jit",*context)),
-        builder(make_unique<llvm::IRBuilder<>>(*context)) {}
-  } Codegen;
 } // namespace nkc
 
 #endif //NKCCommonHeader
